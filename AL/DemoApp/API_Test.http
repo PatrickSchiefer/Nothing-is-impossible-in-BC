@@ -8,12 +8,5 @@ Authorization: Basic asdf==
 Content-Type: application/json
 
 {
-   "value": [
-    {
-      "data": "test"
-    },
-    {
-      "data": "test"
-    }
-   ]
+  "data": "test"
 }
