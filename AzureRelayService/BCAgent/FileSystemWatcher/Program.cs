@@ -25,21 +25,47 @@ static void SendFileToBC(string path, string filename)
 
     if (File.Exists(Path.Combine(path, filename)))
     {
-        StreamReader streamReader = new StreamReader(new FileStream(Path.Combine(path, filename), FileMode.Open));
+        Console.WriteLine("======================================");
+        Console.WriteLine($"Read file {Path.Combine(path,filename)}");
+        StreamReader streamReader = null; 
+        try
+        {
+            streamReader = new StreamReader(new FileStream(Path.Combine(path, filename), FileMode.Open));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            Console.WriteLine("Failed to open file, try again after some Miliseconds");
+            Thread.Sleep(new Random(DateTime.Now.Millisecond).Next(10, 300));
+            SendFileToBC(path, filename);
+            return;
+        }
         string line = streamReader.ReadLine();
         while (line != null)
         {
-            string[] splitLine = line.Split(";");
-            foreach (string element in splitLine)
+            try
             {
-                HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
-                httpRequestMessage.Method = HttpMethod.Post;
-                httpRequestMessage.RequestUri = new Uri("https://cosmo-alpaca.westeurope.cloudapp.azure.com/f03a1ec20fd3rest/api/PatrickSchiefer/DOK/v1.0/importData");
-                httpRequestMessage.Headers.Add("Authorization", "Basic UFNjaGllZmVyODM1MTpJZXJ2MzEyNQ==");
-                httpRequestMessage.Content = JsonContent.Create(new { data = element });
-                httpClient.Send(httpRequestMessage);
+                string[] splitLine = line.Split(";");
+                foreach (string element in splitLine)
+                {
+                    HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
+                    httpRequestMessage.Method = HttpMethod.Post;
+                    httpRequestMessage.RequestUri = new Uri("https://cosmo-alpaca.westeurope.cloudapp.azure.com/f03a1ec20fd3rest/api/PatrickSchiefer/DOK/v1.0/importData");
+                    httpRequestMessage.Headers.Add("Authorization", "Basic UFNjaGllZmVyODM1MTpJZXJ2MzEyNQ==");
+                    httpRequestMessage.Content = JsonContent.Create(new { data = element });
+                    Console.WriteLine($"Send {element} to BC");
+                    httpClient.Send(httpRequestMessage);
+                }
+                line = streamReader.ReadLine();
             }
-            line = streamReader.ReadLine();
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sendig file");
+                Console.WriteLine(ex.Message);
+            }
         }
+        streamReader.Close();
+        File.Delete(Path.Combine(path, filename));
+        Console.WriteLine("Send file successfully");
     }
 }
