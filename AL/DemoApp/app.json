@@ -1,0 +1,28 @@
+{
+  "id": "3e2f194d-dc2a-4a72-983f-5c2c054fc2d0",
+  "name": "SecuredPage",
+  "publisher": "PatrickSchiefer",
+  "version": "1.0.0.0",
+  "dependencies": [
+    {
+      "id": "71850005-df68-4f02-9458-818be2af3b41",
+      "name": "AzureServiceBusLibrary",
+      "publisher": "BCTech",
+      "version": "1.0.0.0"
+    }
+  ],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "23.0.0.0",
+  "idRanges": [
+    {
+      "from": 50400,
+      "to": 50449
+    }
+  ],
+  "target": "OnPrem",
+  "runtime": "12.0",
+  "features": [
+    "NoImplicitWith"
+  ]
+}
